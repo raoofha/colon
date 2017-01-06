@@ -19,7 +19,7 @@ main = putStrLn hello
 
 hello = 'h'::'e'::'l':: 'l' :: 'o' :: []
 
-data MyInt = MyInt Int
+type MyInt = MyInt Int
 type= AnotherInt = MyInt
 type* NewInt = NewInt Int
 ```
