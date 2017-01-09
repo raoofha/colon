@@ -4,23 +4,24 @@ func! ChangeHaskellColonSymbols()
   silent %s/lifeuniverseknowledgepeace/:/ge
 endfunc
 
-func! ChangeHaskellSyntax()
-  let view = winsaveview()
+func! ChangeHaskellSyntax(bufwrite)
   call ChangeHaskellColonSymbols()
-  silent %s/\<type\>/type=/ge
-  silent %s/\<data\>/type/ge
-  silent %s/\<newtype\>/type*/ge
-  call winrestview(view)
+  silent %s/\<type\>\C\([']\)\@!/type=/ge
+  silent %s/\<data\>\C\([']\)\@!/type/ge
+  silent %s/\<newtype\>\C/type*/ge
+  if a:bufwrite
+    call winrestview(b:view)
+  endif
 endfunc
 func! ChangeBackHaskellSyntax()
-  let view = winsaveview()
+  let b:view = winsaveview()
   call ChangeHaskellColonSymbols()
-  silent %s/\<type\>[*]/newtype/ge
+  silent %s/\<type\>\C[*]/newtype/ge
   silent %s/\<type\>=/lifeuniverseknowledgepeace/ge
-  silent %s/\<type\>/data/ge
+  silent %s/\<type\>\C\([']\)\@!/data/ge
   silent %s/lifeuniverseknowledgepeace/type/ge
-  call winrestview(view)
 endfunc
 
-au BufRead,BufWritePost *.hs :call ChangeHaskellSyntax()
+au BufRead *.hs :call ChangeHaskellSyntax(0)
+au BufWritePost *.hs :call ChangeHaskellSyntax(1)
 au BufWrite *.hs :call ChangeBackHaskellSyntax()
